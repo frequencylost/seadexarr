@@ -1222,8 +1222,7 @@ class SeaDexArr:
                                     rg_matches[seadex_idx] = True
 
                                 # Now check against file size
-                                if size_match:
-                                    size_matches[seadex_idx] = True
+                                size_matches[seadex_idx] = True
 
                                 found_episodes[seadex_idx] = True
 
