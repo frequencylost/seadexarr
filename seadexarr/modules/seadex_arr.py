@@ -1099,45 +1099,17 @@ class SeaDexArr:
                         url_item.update({"download": True})
                         torrent_hashes.append(url_hash)
 
-                    # Else, if we match then double-check against the size
+                    # If the release group matches, treat it as already present (ignore filesize differences)
                     if seadex_rg in arr_release_groups:
-
-                        # Be a blunt hammer and just check intersections
-                        seadex_file_sizes = url_item.get("size", [])
-                        arr_file_sizes = arr_release_dict[seadex_rg].get("size", [])
-
-                        if not isinstance(arr_file_sizes, list):
-                            arr_file_sizes = [arr_file_sizes]
-
-                        intersect = list(
-                            filter(
-                                lambda x: x in seadex_file_sizes,
-                                arr_file_sizes,
+                        self.logger.debug(
+                            left_aligned_string(
+                                f"SeaDex release group {seadex_rg} already present in {arr.capitalize()} "
+                                f"release group(s): {','.join([str(x) for x in arr_release_groups])}. "
+                                f"Ignoring filesize checks.",
+                                total_length=self.log_line_length,
                             )
                         )
-
-                        # If we have no overlaps at all, then add
-                        if len(intersect) == 0:
-                            self.logger.info(
-                                left_aligned_string(
-                                    f"SeaDex release group {seadex_rg} in {arr.capitalize()} release(s): "
-                                    f"{','.join([str(x) for x in arr_release_groups])}, but filesizes do not match. "
-                                    f"Will add {url} to downloads",
-                                    total_length=self.log_line_length,
-                                )
-                            )
-
-                            url_item.update({"download": True})
-                            torrent_hashes.append(url_hash)
-
-                        else:
-                            self.logger.debug(
-                                left_aligned_string(
-                                    f"SeaDex release group {seadex_rg} in {arr.capitalize()} release(s): "
-                                    f"{','.join([str(x) for x in arr_release_groups])}, and filesizes match. ",
-                                    total_length=self.log_line_length,
-                                )
-                            )
+                        continue
 
                 else:
 
